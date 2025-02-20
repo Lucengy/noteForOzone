@@ -105,3 +105,23 @@ public void commit(RocksDatabase db) throws IOException {
 we add a cache to RDBBatchOperation for deduplication. Within a batch, the put-ops and delete-ops of the same key can be safely deduplicated. Only the last op has to be applied to the db. All the previous ops can be discarded.
 ```
 
+提供了put/delete/commit接口，其中，put/delete操作委托给OpCache进行操作，commit时通过RocksDB进行操作
+
+```java
+public class RDBBatchOperation implements BatchOperation {
+    public void delete(ColumnFamily family, byte[] key) throws IOException {
+    opCache.delete(family, key);
+  }
+
+  public void put(ColumnFamily family, CodecBuffer key, CodecBuffer value)
+      throws IOException {
+    opCache.put(family, key, value);
+  }
+
+  public void put(ColumnFamily family, byte[] key, byte[] value)
+      throws IOException {
+    opCache.put(family, key, value);
+  }
+}
+```
+

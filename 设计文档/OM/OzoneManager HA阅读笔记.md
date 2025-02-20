@@ -54,3 +54,12 @@ service OzoneManagerService {
 所以将入口的类放在了OzoneManagerProtocolServerSideTranslatorPB，调用了processRequest(OMRequest)--> internalProcessRequest(OMRequest)->submitRequestToRatis(OMRequest) --> OzoneManagerRatisServer.submitRequest(OMRequest) --> submitRequestToRatis(RaftClientRequest) --> submitRequestToRatisImpl(RaftClientRequest) --> RaftServerImpl.submitClientRequestAsync(RaftClientRequest)方法
 
 接下来的逻辑交给了Ratis处理，需要将目光转向OzoneManagerStateMachine
+
+## 2. 有关Cahce design
+
+### cache淘汰策略
+
+```
+A cache entry can be purged once the corresponding write transaction has been written to RocksDB.
+```
+
